@@ -34,8 +34,10 @@ unsigned long tnow;
 // sensors 0 through 5 are connected to analog inputs 0 through 5, respectively
 // QTRSensorsAnalog qtra((unsigned char[]) {0, 1, 2, 3, 4, 5},
 //  NUM_SENSORS, NUM_SAMPLES_PER_SENSOR);
-int sensorValues[NUM_SENSORS];    // analog readings
-int sensorOutput[NUM_SENSORS];    // 1 or 0
+int sensorValues[NUM_SENSORS];        // analog readings
+int sensorOutput[NUM_SENSORS];        // 1 or 0
+int reference[NUM_SENSORS];           // ideal sensor output
+long correlationResults[NUM_SENSORS];  
 
 setLeftPins(int chan)
 {
@@ -90,6 +92,7 @@ void loop()
   int nextChan;
   int a_temp = 0;
   int i;
+  int j;
   
   do {
   
@@ -122,6 +125,14 @@ void loop()
 
     chan = nextChan;
   } while(chan != 0);
+
+  int indexOffset = 0;
+
+  for(i = 0; i < NUM_SENSORS; i++) {
+    for(j = 0; j < NUM_SENSORS; j++) {
+      
+    }
+  }
   
   // print the sensor values as numbers from 0 to 1023, where 0 means maximum reflectance and
   // 1023 means minimum reflectance
