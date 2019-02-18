@@ -1,4 +1,3 @@
-#include <QTRSensors.h>
 // This example is designed for use with six QTR-1A sensors or the first six sensors of a
 // QTR-8A module.  These reflectance sensors should be connected to analog inputs 0 to 5.
 // The QTR-8A's emitter control pin (LEDON) can optionally be connected to digital pin 2,
@@ -8,6 +7,9 @@
 // You can test this by taping a piece of 3/4" black electrical tape to a piece of white
 // paper and sliding the sensor across it.  It prints the sensor values to the serial
 // monitor as numbers from 0 (maximum reflectance) to 1023 (minimum reflectance).
+
+// #include <QTRSensors.h>
+
 #define NUM_SENSORS            32   // number of sensors used
 #define NUM_SAMPLES_PER_SENSOR  4  // average 4 analog samples per sensor reading
 #define FOLLOWER_ENABLE A0
@@ -22,6 +24,7 @@ int thresholds[] = {879, 1064, 1033, 1054, 1063, 1057, 1028, 1066, 956, 993, 101
 
 unsigned long prevTX = 0;
 unsigned long tnow;
+
 // sensors 0 through 5 are connected to analog inputs 0 through 5, respectively
 // QTRSensorsAnalog qtra((unsigned char[]) {0, 1, 2, 3, 4, 5},
 //  NUM_SENSORS, NUM_SAMPLES_PER_SENSOR)
@@ -29,6 +32,12 @@ int sensorValues[NUM_SENSORS];        // analog readings
 int sensorOutput[NUM_SENSORS];        // 1 or 0
 int reference[NUM_SENSORS];           // ideal sensor output
 long correlationResults[NUM_SENSORS];  
+
+// position of center of tape - 0 = centered on left most light sensor, 31 for right most sensor
+int pos = 0;
+
+// TOF sensor distance
+int tof_distance = 100; // for testing
 
 void setLeftPins(int chan)
 {
@@ -98,11 +107,12 @@ void loop()
   int k;
   
   do {
-  
+
     // read raw sensor values
     //setLeftPins(8);
   
     // read left sensor channel
+    a_temp = 0;
     for(i = 0; i < NUM_SAMPLES_PER_SENSOR; i++) {
     // for(i = 0; i < 100; i++) {
     //while (1) {
@@ -141,6 +151,7 @@ void loop()
     setLeftPins(nextChan);
 
     // read right sensor channel
+    a_temp = 0;
     for(i = 0; i < NUM_SAMPLES_PER_SENSOR; i++) {
       // b_temp = analogRead(RIGHT_MUX_SIGNAL);
       a_temp += analogRead(RIGHT_MUX_SIGNAL);
@@ -169,7 +180,6 @@ void loop()
 
   int sumoftorque = 0;
   int mass =0;
-  int pos = 0;
 
   for(i = 0; i < (NUM_SENSORS); i++) {
     sumoftorque += (sensorOutput[i] * (i));
