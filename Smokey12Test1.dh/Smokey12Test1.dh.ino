@@ -1,3 +1,4 @@
+
 // This example is designed for use with six QTR-1A sensors or the first six sensors of a
 // QTR-8A module.  These reflectance sensors should be connected to analog inputs 0 to 5.
 // The QTR-8A's emitter control pin (LEDON) can optionally be connected to digital pin 2,
@@ -49,14 +50,14 @@ CAN ID: (Mfr ID): 0000 1000  (Device Type): 01010  (API ID): 00 0000 0000 (Devic
 CAN ID: 0 0001 0000 1010   0000 0000   0000 0001 
 which is: 0x010a0001
 */
-#define CAN_ID 0x010a0001
+#define CAN_ID 0x0a080001
 
 MCP_CAN CAN0(8); // Set MCP25625 CS to Arduino pin 8
 
 // Line Follower variables
 int leftPins[] = {5, 6, 9, 10};
 int rightPins[] = {0, 1, 12, 11};
-int thresholds[] = {879, 1064, 1033, 1054, 1063, 1057, 1028, 1066, 956, 993, 1013, 1058, 1054, 1057, 1068, 1007, 932, 1067, 1069, 1047, 1061, 1008, 1039, 1003, 985, 1068, 1033, 1040, 1026, 1060, 1063, 1119
+int thresholds[] = {848, 757, 722, 725, 770, 761, 740, 774, 666, 715, 710, 770, 768, 771, 779, 710, 677, 779, 788, 758, 772, 718, 759, 708, 721, 797, 755, 752, 740, 773, 774, 851
 };
 
 // sensors 0 through 5 are connected to analog inputs 0 through 5, respectively
@@ -104,6 +105,7 @@ void packMsg()
     // shift it into position - the left most center should be the MSb of a 32 bit number
     ltemp |= (sensorOutput[i] & 0x01) << (31 - i);          
   }
+  
   data[0] = (ltemp >> 24) & 0x00ff;
   data[1] = (ltemp >> 16) & 0x00ff;
   data[2] = (ltemp >> 8) & 0x00ff;
@@ -113,13 +115,18 @@ void packMsg()
   // into the next 16 bits.
   // This is a signed value, in units of the distance between sensors, i.e, from
   // -16 to 16.  0 is excluded.
+  
   if(pos < 16) {
     distance = pos - 16.0;
   } else {
     distance = pos - 15.0;
   }
+  
   data[4] = (distance >> 8) & 0xff;
   data[5] = distance & 0xff;
+
+  // data[4] = (pos >> 8) & 0xff;
+  // data[5] = pos & 0xff;
 
   // Then pack the TOF distance into the next 16 bits.
   // This is a unsigned value, in units of mm
@@ -164,7 +171,7 @@ void setup()
   //setDimmingLevel(0);
   
   // wait for serial port
-  while(!Serial) ;
+  // while(!Serial) ;
   
   // configure channels select outputs to multiplexers
   for(i = 0; i < 4; i++) {
@@ -286,7 +293,7 @@ void loop()
     setRightPins(nextChan);
 
     chan = nextChan;
-    delay(100);
+    // delay(100);
   } while(chan != 0);
 
   int sumoftorque = 0;
@@ -302,23 +309,23 @@ void loop()
   // 1023 means minimum reflectance
   for (unsigned char i = 0; i < NUM_SENSORS; i++) { 
     // Serial.print(i);
-    Serial.print(sensorValues[i]);
-    Serial.print('\t'); // tab to format the raw data into columns in the Serial monitor
+    // Serial.print(sensorValues[i]);
+    // Serial.print('\t'); // tab to format the raw data into columns in the Serial monitor
   }
-  Serial.println();
+  // Serial.println();
 
   for (unsigned char k = 0; k < NUM_SENSORS; k++) {
-    //Serial.print(k);
-    Serial.print(sensorOutput[k]);
-    Serial.print('\t'); // tab to format the raw data into columns in the Serial monitor
+    // Serial.print(k);
+    // Serial.print(sensorOutput[k]);
+    // Serial.print('\t'); // tab to format the raw data into columns in the Serial monitor
   }
   
-  Serial.println();
+  // Serial.println();
   Serial.print(pos);
   Serial.println();
 
   // for testing, especially when no array is present
-  test_values();
+  // test_values();
 
   // pack message for protocol from Feather CAN Line Follower to RoboRio
   packMsg();
@@ -326,6 +333,11 @@ void loop()
   // send Extended msg
   // byte sndStat = CAN0.sendMsgBuf(CAN_ID | 0x80000000, 1, 8, data);
   byte sndStat = CAN0.sendMsgBuf(CAN_ID, 1, 8, data);
+  /*
+  for(i = 4; i < 6; i++) {
+    Serial.println(data[i]);
+  }
+  */
   // byte sndStat = CAN_OK;
     
   /* debug printouts
@@ -335,11 +347,12 @@ void loop()
   Serial.print("REC: ");
   Serial.println(CAN0.errorCountRX());
   */
-    
+  
   if(sndStat == CAN_OK) {
     Serial.println("Message Sent Successfully!");
   } else {
     Serial.println("Error Sending Message...");
   }
   Serial.println();
+  
 }
