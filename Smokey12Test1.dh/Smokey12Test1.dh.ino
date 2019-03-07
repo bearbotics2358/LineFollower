@@ -57,7 +57,7 @@ MCP_CAN CAN0(8); // Set MCP25625 CS to Arduino pin 8
 // Line Follower variables
 int leftPins[] = {5, 6, 9, 10};
 int rightPins[] = {0, 1, 12, 11};
-int thresholds[] = {848, 757, 722, 725, 770, 761, 740, 774, 666, 715, 710, 770, 768, 771, 779, 710, 677, 779, 788, 758, 772, 718, 759, 708, 721, 797, 755, 752, 740, 773, 774, 851
+int thresholds[] = {903, 809, 774, 768, 797, 788, 784, 809, 713, 752, 751, 803, 796, 800, 801, 741, 706, 795, 810, 784, 789, 737, 751, 736, 743, 806, 766, 755, 739, 765, 763, 843
 };
 
 // sensors 0 through 5 are connected to analog inputs 0 through 5, respectively
@@ -309,10 +309,10 @@ void loop()
   // 1023 means minimum reflectance
   for (unsigned char i = 0; i < NUM_SENSORS; i++) { 
     // Serial.print(i);
-    // Serial.print(sensorValues[i]);
-    // Serial.print('\t'); // tab to format the raw data into columns in the Serial monitor
+    Serial.print(sensorValues[i]);
+    Serial.print('\t'); // tab to format the raw data into columns in the Serial monitor
   }
-  // Serial.println();
+  Serial.println();
 
   for (unsigned char k = 0; k < NUM_SENSORS; k++) {
     // Serial.print(k);
@@ -347,12 +347,13 @@ void loop()
   Serial.print("REC: ");
   Serial.println(CAN0.errorCountRX());
   */
-  
+  /*
   if(sndStat == CAN_OK) {
     Serial.println("Message Sent Successfully!");
   } else {
     Serial.println("Error Sending Message...");
   }
-  Serial.println();
+  */
+  // Serial.println();
   
 }
