@@ -297,7 +297,7 @@ void loop()
   } while(chan != 0);
 
   int sumoftorque = 0;
-  int mass =0;
+  int mass = 0;
 
   for(i = 0; i < (NUM_SENSORS); i++) {
     sumoftorque += (sensorOutput[i] * (i));
