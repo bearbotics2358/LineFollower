@@ -46,9 +46,11 @@ Device Type - HAL_CAN_Dev_kMiscellaneous = 10
 API ID is up to us
 Device ID is unique to each module of a specific type (e.g., we can have more than 1 line follower)
 
-CAN ID: (Mfr ID): 0000 1000  (Device Type): 01010  (API ID): 00 0000 0000 (Device ID):00 0001 
-CAN ID: 0 0001 0000 1010   0000 0000   0000 0001 
-which is: 0x010a0001
+CAN ID: (Device Type): 01010 (Mfr ID): 0000 1000 (API ID): 00 0000 0000 (Device ID):00 0001 
+CAN ID: 01010 0000 1000 00 0000 0000 00 0001 
+CAN ID: 0 1010 0000 1000 0000 0000 0000 0001 
+which is: 0x0A080001
+
 */
 #define CAN_ID 0x0a080001
 
